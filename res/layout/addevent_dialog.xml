@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_dialog_layout_design_user_input"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/setDescrp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Description:" />
+
+    <EditText
+        android:id="@+id/userInputDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Something"
+        android:inputType="text" />
+    
+    <TextView
+        android:id="@+id/setTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Description:" />
+
+   <LinearLayout 
+       android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    
+    <TimePicker
+        android:id="@+id/start_time"
+        android:layout_gravity="start"
+        android:layout_width="100dp"
+        android:layout_height="match_parent" />
+    
+    <TimePicker
+        android:id="@+id/end_time"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:timePickerMode="clock" />
+    
+    </LinearLayout> 
+</LinearLayout>
