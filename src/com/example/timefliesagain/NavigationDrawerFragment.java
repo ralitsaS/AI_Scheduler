@@ -43,7 +43,7 @@ public class NavigationDrawerFragment extends Fragment {
 
 
         // Select the default item.
-        selectItem(mCurrentSelectedPosition);
+       // selectItem(mCurrentSelectedPosition);
     }
 
     @Override
@@ -179,7 +179,28 @@ public class NavigationDrawerFragment extends Fragment {
         
         if(position==2)
         {
-        	//dialog with checkboxes for hours?
+        	LayoutInflater layoutInflaterAndroid = LayoutInflater.from(this.getActivity());
+            View mView = layoutInflaterAndroid.inflate(R.layout.avail_dialog, null);
+            AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this.getActivity());
+            alertDialogBuilderUserInput.setView(mView);
+            
+            alertDialogBuilderUserInput
+                    .setCancelable(false)
+                    .setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogBox, int id) {
+                            // ToDo get user input here
+                        }
+                    })
+
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialogBox, int id) {
+                                    dialogBox.cancel();
+                                }
+                            });
+
+            AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+            alertDialogAndroid.show();
         }
         
     }

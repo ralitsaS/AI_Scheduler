@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -94,6 +96,13 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
             }
         });
         
+        final View hour1 =(View)findViewById(R.id.hour_1);
+        hour1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	hour1.setBackgroundColor(0xFF00FF00);
+            }
+        });
         
     }
     

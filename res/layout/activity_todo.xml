@@ -5,15 +5,16 @@
     tools:context="com.example.timefliesagain.ToDoList" >
 
     <LinearLayout
-    android:id="@+id/dayview_part"
+    android:id="@+id/todo_part"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:orientation="horizontal">
 
         <Button
@@ -36,14 +37,45 @@
             android:layout_weight="3"/>
         
         <Button
-            android:id="@+id/next_day"
+            android:id="@+id/save_changes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_weight="1"
+            android:text="save" />
+        
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" >
+
+        <EditText
+            android:id="@+id/input_task"
+            android:layout_width="175dp"
+            android:layout_height="wrap_content"
+            android:ems="10" >
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/input_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/add_task_to_db"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Add" />
-        
-        
     </LinearLayout>
 
     <LinearLayout
@@ -55,8 +87,7 @@
             android:id="@+id/android:list"
             android:layout_width="fill_parent"
             android:layout_height="match_parent" >
-
-  		</com.example.timefliesagain.DragNDropListView>
+        </com.example.timefliesagain.DragNDropListView>
     </LinearLayout>
     
     

@@ -1,0 +1,4 @@
+<resources>
+    <color name="avail_color">#ffffff</color>
+    <color name="unavail_color">#f0f0f0</color>
+</resources>

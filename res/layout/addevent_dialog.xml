@@ -14,32 +14,38 @@
         android:id="@+id/userInputDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Something"
+        android:hint="Enter.."
         android:inputType="text" />
     
     <TextView
         android:id="@+id/setTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Event Description:" />
+        android:text="Set event start/end time:" />
 
-   <LinearLayout 
+  	<LinearLayout 
        android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="vertical">
     
     <TimePicker
         android:id="@+id/start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_width="100dp"
-        android:layout_height="match_parent" />
+        android:timePickerMode="spinner"
+        
+       />
     
+
+        
     <TimePicker
         android:id="@+id/end_time"
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:timePickerMode="clock" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+       
+        android:timePickerMode="spinner" />
     
     </LinearLayout> 
 </LinearLayout>

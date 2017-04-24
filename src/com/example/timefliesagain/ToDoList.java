@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -20,11 +22,17 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.app.ListActivity;
+import android.content.Intent;
 
 
 public class ToDoList extends ListActivity {
     private static final String TAG = ToDoList.class.getSimpleName();
     private Button back_button;
+    private Button add_task;
+    private EditText input_task;
+    private EditText input_duration;
+    private PlannerRepo repo_inst;
+    private ArrayList<String> content;
     
     
     @Override
@@ -33,16 +41,19 @@ public class ToDoList extends ListActivity {
       //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        //Remove notification bar
-        //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        //set content view AFTER ABOVE sequence (to avoid crash)
         this.setContentView(R.layout.activity_todo); 
         
-        ArrayList<String> content = new ArrayList<String>(mListContent.length);
-        for (int i=0; i < mListContent.length; i++) {
-        	content.add(mListContent[i]);
+        /////////////
+        
+        repo_inst = new PlannerRepo(this);
+        ArrayList<HashMap<String, String>> todo_items = repo_inst.getToDoList();
+        
+        content = new ArrayList<String>();
+        for (int i=0; i < todo_items.size(); i++) {
+        	content.add(todo_items.get(i).get("taskName")+" yaay");
         }
+        
+        /////////////
         
         setListAdapter(new DragNDropAdapter(this, new int[]{R.layout.dragitem}, new int[]{R.id.TextView01}, content));//new DragNDropAdapter(this,content)
         ListView listView = getListView();
@@ -53,6 +64,35 @@ public class ToDoList extends ListActivity {
         	((DragNDropListView) listView).setDragListener(mDragListener);
         }
        
+        back_button = (Button)findViewById(R.id.back_button);
+        
+        back_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	Intent myIntent = new Intent(ToDoList.this, MainActivity.class);
+                // myIntent.putExtra("key", value); //Optional parameters
+            	ToDoList.this.startActivity(myIntent);
+            }
+        });
+        
+        add_task = (Button)findViewById(R.id.add_task_to_db);
+        input_task = (EditText)findViewById(R.id.input_task);
+        input_duration = (EditText)findViewById(R.id.input_duration);
+        
+        add_task.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String task = input_task.getText().toString();
+                String dur = input_duration.getText().toString();
+                
+                repo_inst.insertToDo_NEW(task, dur);
+                content.add(task);
+                setListAdapter(new DragNDropAdapter(ToDoList.this, new int[]{R.layout.dragitem}, new int[]{R.id.TextView01}, content));
+            }
+        });
+        
+        
+        
     }
     
     private DropListener mDropListener = 
@@ -103,7 +143,5 @@ public class ToDoList extends ListActivity {
     			}
         	
         };
-        
-        private static String[] mListContent={"Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7"};
 
 }
