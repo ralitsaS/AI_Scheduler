@@ -11,8 +11,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,12 +33,13 @@ import android.content.Intent;
 public class ToDoList extends ListActivity {
     private static final String TAG = ToDoList.class.getSimpleName();
     private Button back_button;
+    private Button save_changes;
     private Button add_task;
     private EditText input_task;
     private EditText input_duration;
     private PlannerRepo repo_inst;
     private ArrayList<String> content;
-    
+    private ArrayList<HashMap<String, String>> todo_items;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +52,12 @@ public class ToDoList extends ListActivity {
         /////////////
         
         repo_inst = new PlannerRepo(this);
-        ArrayList<HashMap<String, String>> todo_items = repo_inst.getToDoList();
+        todo_items = repo_inst.getToDoList();
         
         content = new ArrayList<String>();
         for (int i=0; i < todo_items.size(); i++) {
-        	content.add(todo_items.get(i).get("taskName")+" yaay");
+        	Log.v("dbitemID", todo_items.get(i).get("id3"));
+        	content.add(todo_items.get(i).get("taskName")+"-"+todo_items.get(i).get("taskDuration"));
         }
         
         /////////////
@@ -63,6 +70,20 @@ public class ToDoList extends ListActivity {
         	((DragNDropListView) listView).setRemoveListener(mRemoveListener);
         	((DragNDropListView) listView).setDragListener(mDragListener);
         }
+        
+        registerForContextMenu(listView);
+        
+        /*listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                    int pos, long id) {
+                // TODO Auto-generated method stub
+
+                Log.v("long clicked","pos: " + pos);
+
+                return true;
+            }
+        }); */
        
         back_button = (Button)findViewById(R.id.back_button);
         
@@ -72,6 +93,29 @@ public class ToDoList extends ListActivity {
             	Intent myIntent = new Intent(ToDoList.this, MainActivity.class);
                 // myIntent.putExtra("key", value); //Optional parameters
             	ToDoList.this.startActivity(myIntent);
+            }
+        });
+        
+        save_changes = (Button)findViewById(R.id.save_changes);
+        
+        save_changes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	String get_all;
+            	String[] parts; 
+            	String get_task;
+            	String get_dur;
+            	repo_inst.deleteToDoALL();
+            	
+            	for (int i=0; i < content.size(); i++) {
+                	get_all=content.get(i);
+                	parts = get_all.split("-");
+                	get_task = parts[0];
+                	get_dur = parts[1];
+                	Log.v("changes", get_task+get_dur);
+                	repo_inst.insertToDo_NEW(get_task, get_dur);
+                	//repo_inst.updateToDo_NEW(i+1, get_task, get_dur);
+                }
             }
         });
         
@@ -86,7 +130,7 @@ public class ToDoList extends ListActivity {
                 String dur = input_duration.getText().toString();
                 
                 repo_inst.insertToDo_NEW(task, dur);
-                content.add(task);
+                content.add(task+"-"+dur);
                 setListAdapter(new DragNDropAdapter(ToDoList.this, new int[]{R.layout.dragitem}, new int[]{R.id.TextView01}, content));
             }
         });
@@ -143,5 +187,54 @@ public class ToDoList extends ListActivity {
     			}
         	
         };
+        
+        
+        ///////////////
+        
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        	menu.setHeaderTitle("Select The Action");
+        	menu.add(0, 0, 0, "Edit");
+        	menu.add(0, 1, 0, "Delete");  
+        	super.onCreateContextMenu(menu, v, menuInfo);
+              
+        }
+        
+        @Override
+        public boolean onContextItemSelected(MenuItem item) {
+          AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+          int menuItemIndex = item.getItemId();
+          int list_index = info.position;
+          
+          if(menuItemIndex==0)
+          {
+        	  //Log.v("db_item", String.valueOf(todo_items.get(i).get("id3")));
+          }
+          if(menuItemIndex==1)
+          {
+        	  //String DBitem_index;
+        	  String get_all = content.get(list_index);
+        	  String[] split = get_all.split("-");
+        	  String get_task = split[0];
+        	  Log.v("listitem", String.valueOf(get_task));
+        	  for (int i=0; i < todo_items.size(); i++) {
+        		  Log.v("db_item", String.valueOf(todo_items.get(i).get("taskName")));
+                  
+        		  if(get_task.equals(todo_items.get(i).get("taskName")))
+        		  {
+        			  Log.v("db_item", String.valueOf(todo_items.get(i).get("id3")));
+        			  repo_inst.deleteToDo(todo_items.get(i).get("id3"));
+        		  }
+        	  }
+        	  
+        	  
+        	  
+        	  content.remove(list_index);
+              setListAdapter(new DragNDropAdapter(ToDoList.this, new int[]{R.layout.dragitem}, new int[]{R.id.TextView01}, content));
+
+          }
+          
+          return true;
+        }
 
 }

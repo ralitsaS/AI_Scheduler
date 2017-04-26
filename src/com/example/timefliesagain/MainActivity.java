@@ -68,9 +68,9 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         openToDo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            	Intent myIntent = new Intent(MainActivity.this, ToDoList.class);
-               // myIntent.putExtra("key", value); //Optional parameters
-                MainActivity.this.startActivity(myIntent);
+	            	Intent myIntent = new Intent(MainActivity.this, ToDoList.class);
+	               // myIntent.putExtra("key", value); //Optional parameters
+	                MainActivity.this.startActivity(myIntent);
             }
         });
         

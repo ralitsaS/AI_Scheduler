@@ -84,13 +84,20 @@ public class PlannerRepo {
         db.close(); // Closing database connection
     }
 
-    public void deleteToDo(int iD) {
+    public void deleteToDo(String iD) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(PlannerDB.TABLE3, PlannerDB.KEY_ID_3 + "= ?", new String[] { String.valueOf(iD) });
         db.close(); // Closing database connection
     }
 
+    public void deleteToDoALL() {
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete(PlannerDB.TABLE3, null, null);
+        db.close(); // Closing database connection
+    }
+    
     // Update database entry appointment
     public void updateAppointment(PlannerDB planner) {
 
@@ -129,6 +136,19 @@ public class PlannerRepo {
 
         db.update(PlannerDB.TABLE3, values, PlannerDB.KEY_ID_3 + "= ?", new String[] { String.valueOf(toDo.planning_ID_3) });
         db.close(); // Closing database connection
+
+    }
+    
+    public void updateToDo_NEW(int id, String task, String dur) {
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(PlannerDB.KEY_taskName, task);
+        values.put(PlannerDB.KEY_taskDuration, dur);
+
+        db.update(PlannerDB.TABLE3, values, null, new String[] { String.valueOf(id) });
+        //db.close(); // Closing database connection
 
     }
 
@@ -215,6 +235,7 @@ public class PlannerRepo {
                 HashMap<String, String> toDo = new HashMap<String, String>();
                 toDo.put("id3", cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_ID_3)));
                 toDo.put("taskName", cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_taskName)));
+                toDo.put("taskDuration", cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_taskDuration)));
                 toDoList.add(toDo);
 
             } while (cursor.moveToNext());
