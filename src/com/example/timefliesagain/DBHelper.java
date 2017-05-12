@@ -8,7 +8,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //version number to upgrade database version
     //each time if you Add, Edit table, you need to change the
     //version number.
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // Database Name
     private static final String DATABASE_NAME = "planning.db";
@@ -23,7 +23,6 @@ public class DBHelper extends SQLiteOpenHelper {
         //All necessary tables you'd like to create will be created here
         String CREATE_TABLE_APPOINTMENT = "CREATE TABLE " + PlannerDB.TABLE1  + "("
                 + PlannerDB.KEY_ID_1  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + PlannerDB.KEY_date + " TEXT, "
                 + PlannerDB.KEY_time_start + " TEXT, "
                 + PlannerDB.KEY_time_end + " TEXT, "
                 + PlannerDB.KEY_description + " TEXT); ";
@@ -32,6 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String CREATE_TABLE_AVAILABILITY = "CREATE TABLE " + PlannerDB.TABLE2  + "("
                 + PlannerDB.KEY_ID_2  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + PlannerDB.KEY_date + " TEXT, "
                 + PlannerDB.KEY_availability + " TEXT); ";
 
         db.execSQL(CREATE_TABLE_AVAILABILITY);
@@ -42,6 +42,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 + PlannerDB.KEY_taskDuration + " TEXT); ";
 
         db.execSQL(CREATE_TABLE_TODO);
+        
+        String CREATE_TABLE_NOTES = "CREATE TABLE " + PlannerDB.TABLE4  + "("
+                + PlannerDB.KEY_ID_4  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + PlannerDB.KEY_note + " TEXT); ";
+
+        db.execSQL(CREATE_TABLE_NOTES);
 
     }
 
@@ -51,6 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + PlannerDB.TABLE1);
         db.execSQL("DROP TABLE IF EXISTS " + PlannerDB.TABLE2);
         db.execSQL("DROP TABLE IF EXISTS " + PlannerDB.TABLE3);
+        db.execSQL("DROP TABLE IF EXISTS " + PlannerDB.TABLE4);
 
         // Create tables again
         onCreate(db);

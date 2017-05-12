@@ -33,6 +33,8 @@
     <string name="add_event">Add Event</string>
     <string name="add_task">Add Task</string>
     <string name="set_availability">Set Availability</string>
+    <string name="notes">My Notes</string>
+    <string name="plan">Plan Day</string>
     
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

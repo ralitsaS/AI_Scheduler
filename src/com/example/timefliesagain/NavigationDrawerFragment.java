@@ -1,13 +1,20 @@
 package com.example.timefliesagain;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 //import android.support.v7.app.AppCompatActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -16,10 +23,15 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 public class NavigationDrawerFragment extends Fragment {
 
@@ -27,7 +39,7 @@ public class NavigationDrawerFragment extends Fragment {
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     private NavigationDrawerCallbacks mCallbacks;
     private ActionBarDrawerToggle mDrawerToggle;
-
+    private PlannerRepo repo_inst;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
@@ -41,7 +53,7 @@ public class NavigationDrawerFragment extends Fragment {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
         }
 
-
+        repo_inst = new PlannerRepo(this.getActivity());
         // Select the default item.
        // selectItem(mCurrentSelectedPosition);
     }
@@ -73,6 +85,8 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.add_event),
                         getString(R.string.add_task),
                         getString(R.string.set_availability),
+                        getString(R.string.notes),
+                        getString(R.string.plan),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
@@ -142,13 +156,21 @@ public class NavigationDrawerFragment extends Fragment {
         mCurrentSelectedPosition = position;
         if(position==0)
     	{
+        	View view = this.getActivity().getCurrentFocus();
+        	if (view != null) {  
+        	    InputMethodManager imm = (InputMethodManager)this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        	    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        	}
             //AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
             LayoutInflater layoutInflaterAndroid = LayoutInflater.from(this.getActivity());
             View mView = layoutInflaterAndroid.inflate(R.layout.addevent_dialog, null);
             AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this.getActivity());
             alertDialogBuilderUserInput.setView(mView);
 
-            final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
+            final DatePicker date_picked = (DatePicker)mView.findViewById(R.id.datePicker1);
+            final TimePicker pick_start = (TimePicker)mView.findViewById(R.id.start_time);
+            final TimePicker pick_end = (TimePicker)mView.findViewById(R.id.end_time);
+            final EditText pick_desc = (EditText)mView.findViewById(R.id.userInputDialog);
             
             
             alertDialogBuilderUserInput
@@ -156,6 +178,44 @@ public class NavigationDrawerFragment extends Fragment {
                     .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogBox, int id) {
                             // ToDo get user input here
+                        	int day = date_picked.getDayOfMonth();
+                            int month = date_picked.getMonth();
+                            int year =  date_picked.getYear();
+                            int hour_start = pick_start.getHour();
+                            int min_start = pick_start.getMinute();
+                            int hour_end = pick_end.getHour();
+                            int min_end = pick_end.getMinute();
+                            
+                            Calendar cal1 = Calendar.getInstance();
+                            cal1.set(Calendar.YEAR, year);
+                            cal1.set(Calendar.MONTH, month);
+                            cal1.set(Calendar.DATE, day);
+                            cal1.set(Calendar.HOUR_OF_DAY, hour_start);
+                            cal1.set(Calendar.MINUTE, min_start);
+                            cal1.set(Calendar.SECOND, 0);
+                            cal1.set(Calendar.MILLISECOND, 0);
+                            Date event_start = cal1.getTime();
+                            
+                            SimpleDateFormat format = new SimpleDateFormat("d-MM-yyyy HH:mm", Locale.ENGLISH);
+                            String start = format.format(event_start);
+                            
+                            Calendar cal2 = Calendar.getInstance();
+                            cal2.set(Calendar.YEAR, year);
+                            cal2.set(Calendar.MONTH, month);
+                            cal2.set(Calendar.DATE, day);
+                            cal2.set(Calendar.HOUR_OF_DAY, hour_end);
+                            cal2.set(Calendar.MINUTE, min_end);
+                            cal2.set(Calendar.SECOND, 0);
+                            cal2.set(Calendar.MILLISECOND, 0);
+                            Date event_end = cal2.getTime();
+                            
+                            String end = format.format(event_end);
+                            
+                            String desc  = pick_desc.getText().toString();
+                            
+                            //CHANGE THIS LATER
+                            
+                            repo_inst.insertAppointment_NEW(start, end, "oh jeez rick");
                         }
                     })
 
@@ -180,15 +240,35 @@ public class NavigationDrawerFragment extends Fragment {
         if(position==2)
         {
         	LayoutInflater layoutInflaterAndroid = LayoutInflater.from(this.getActivity());
-            View mView = layoutInflaterAndroid.inflate(R.layout.avail_dialog, null);
+            final View mView = layoutInflaterAndroid.inflate(R.layout.avail_dialog, null);
             AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this.getActivity());
             alertDialogBuilderUserInput.setView(mView);
+            
+            final String curD = MainActivity.currentDate.getText().toString();
+            TextView set_avail_text = (TextView)mView.findViewById(R.id.text_avail);
+            set_avail_text.setText("Set available hours for "+curD);
+            
+            
             
             alertDialogBuilderUserInput
                     .setCancelable(false)
                     .setPositiveButton("Set", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogBox, int id) {
-                            // ToDo get user input here
+
+                        	String avail_hours=" ";
+
+                        	for(int i=1; i<=24; i++)
+                        	{
+                        		String checkID = "checkBox"+Integer.toString(i);
+                        		int ch_id = getResources().getIdentifier(checkID, "id", getContext().getPackageName());
+                        		if(((CheckBox)mView.findViewById(ch_id)).isChecked())
+                        		{
+                        			avail_hours = avail_hours+i+" ";
+                        			//Log.i("checked", checkID);
+                        		} 
+                        	}
+                        	
+                        	repo_inst.insertAvailability_NEW(curD, avail_hours);
                         }
                     })
 
@@ -201,6 +281,18 @@ public class NavigationDrawerFragment extends Fragment {
 
             AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
             alertDialogAndroid.show();
+        }
+        
+        if(position==3)
+        {
+        	Intent myIntent = new Intent(this.getActivity(), MyNotes.class);
+            // myIntent.putExtra("key", value); //Optional parameters
+        	this.getActivity().startActivity(myIntent);
+        }
+        
+        if(position==4)
+        {
+        	//plan button
         }
         
     }

@@ -24,8 +24,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import android.support.v4.app.Fragment;
@@ -38,18 +40,20 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
     private Button previousDay;
     private Button nextDay;
     private Button openToDo;
-    private TextView currentDate;
+    public static TextView currentDate;
     private Calendar cal = Calendar.getInstance();
     private RelativeLayout mLayout;
     private int eventIndex;
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
+    private PlannerRepo repo_inst;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
       
         this.setContentView(R.layout.activity_main); 
+        repo_inst = new PlannerRepo(this);
         
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -77,6 +81,7 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         ///////////////////////
         mLayout = (RelativeLayout)findViewById(R.id.left_event_column);
         eventIndex = mLayout.getChildCount();
+        Log.i("eventIndex1", Integer.toString(eventIndex));
         currentDate = (TextView)findViewById(R.id.display_current_date);
         currentDate.setText(displayDateInString(cal.getTime()));
         displayDailyEvents();
@@ -96,6 +101,7 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
             }
         });
         
+        /*
         final View hour1 =(View)findViewById(R.id.hour_1);
         hour1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,19 +109,56 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
             	hour1.setBackgroundColor(0xFF00FF00);
             }
         });
+        */
+        
+        ArrayList<HashMap<String, String>> avail_list = repo_inst.getAvailabilityList();
+        String avail = null;
+        String[] avail_hours;
+        for(int i=0; i < avail_list.size(); i++)
+        {
+        	if(avail_list.get(i).get("date").equals(currentDate.getText().toString())) 
+        		{
+        			avail=avail_list.get(i).get("availability");
+        			avail_hours = avail.split(" ");
+        			
+        			for(int j=0; j < avail_hours.length; j++)
+        			{
+        				Log.i("hour", avail_hours[j]);
+        				String hourID = "hour_"+avail_hours[j];
+        				int h_id = getResources().getIdentifier(hourID, "id", getPackageName());
+        				Log.i("hour id", Integer.toString(h_id));
+        				View hour =(View)findViewById(h_id);
+        				if(hour != null) hour.setBackgroundColor(0xFFFFFFFF);
+        			}
+        		}
+        }
+        
+        
+        
         
     }
     
     
     
     private void previousCalendarDate(){
-        //mLayout.removeViewAt(eventIndex - 1);
+    	if(mLayout.getChildAt(eventIndex-1)!=null) 
+    		{
+    		//Log.i("eventIndex2", Integer.toString(mLayout.getChildCount()));
+    		mLayout.removeViewAt(eventIndex - 1);
+    		//Log.i("eventIndex3", Integer.toString(mLayout.getChildCount()));
+    		} 
+    	
         cal.add(Calendar.DAY_OF_MONTH, -1);
         currentDate.setText(displayDateInString(cal.getTime()));
         displayDailyEvents();
     }
     private void nextCalendarDate(){
-        //mLayout.removeViewAt(eventIndex - 1);
+    	if(mLayout.getChildAt(eventIndex-1)!=null) 
+    		{//Log.i("eventIndex4", Integer.toString(mLayout.getChildCount()));
+    		mLayout.removeViewAt(eventIndex - 1);
+    		//Log.i("eventIndex5", Integer.toString(mLayout.getChildCount()));
+    		} 
+    	
         cal.add(Calendar.DAY_OF_MONTH, 1);
         currentDate.setText(displayDateInString(cal.getTime()));
         displayDailyEvents();
@@ -126,7 +169,8 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
     }
     private void displayDailyEvents(){
         Date calendarDate = cal.getTime();
-        /*
+        List<EventObjects> dailyEvent = repo_inst.getAllFutureEvents(calendarDate);
+        
         for(EventObjects eObject : dailyEvent){
             Date eventDate = eObject.getDate();
             Date endDate = eObject.getEnd();
@@ -135,7 +179,7 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
             Log.d(TAG, "Height " + eventBlockHeight);
             displayEventSection(eventDate, eventBlockHeight, eventMessage);
         }
-        */
+        
     }
     private int getEventTimeFrame(Date start, Date end){
         long timeDifference = end.getTime() - start.getTime();
@@ -161,16 +205,18 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         TextView mEventView = new TextView(MainActivity.this);
         RelativeLayout.LayoutParams lParam = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         lParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        lParam.topMargin = topMargin * 2;
+        lParam.topMargin = (int) (topMargin * 1.5);
         lParam.leftMargin = 24;
         mEventView.setLayoutParams(lParam);
         mEventView.setPadding(24, 0, 24, 0);
-        mEventView.setHeight(height * 2);
+        mEventView.setHeight((int) (height * 1.5));
         mEventView.setGravity(0x11);
         mEventView.setTextColor(Color.parseColor("#ffffff"));
         mEventView.setText(message);
         mEventView.setBackgroundColor(Color.parseColor("#3F51B5"));
         mLayout.addView(mEventView, eventIndex - 1);
+        Log.i("eventIndex6", Integer.toString(mLayout.getChildCount()));
+        
     }
     
     //////////////////////////////////////////
@@ -216,6 +262,12 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
             case 3:
                 mTitle = getString(R.string.set_availability);
                 break;
+            case 4:
+                mTitle = getString(R.string.notes);
+                break;
+            case 5:
+                mTitle = getString(R.string.plan);
+                break;    
         }
     }
     

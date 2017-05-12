@@ -374,7 +374,7 @@
                     android:id="@+id/hour_1"
                     android:layout_height="60dp"
                     android:layout_marginTop="0dp"
-                    android:background="#ffff0000"
+                    android:background="#ffdedede"
                     android:clickable="true" />
 
                 <View
@@ -383,12 +383,28 @@
                     android:layout_marginTop="60dp"
                     android:background="@android:color/black"
                      />
+                
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_2"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="61dp"
+                    android:background="#ffdedede" />
+                
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="120dp"
                     android:background="@android:color/black"
                      />
+                
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_3"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="121dp"
+                    android:background="#ffdedede" />
+                
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -397,10 +413,22 @@
                      />
                 <View
                     android:layout_width="fill_parent"
+                    android:id="@+id/hour_4"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="181dp"
+                    android:background="#ffdedede" />
+                <View
+                    android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="240dp"
                     android:background="@android:color/black"
                      />
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_5"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="241dp"
+                    android:background="#ffdedede" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -409,10 +437,22 @@
                      />
                 <View
                     android:layout_width="fill_parent"
+                    android:id="@+id/hour_6"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="301dp"
+                    android:background="#ffdedede" />
+                <View
+                    android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="360dp"
                     android:background="@android:color/black"
                      />
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_7"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="361dp"
+                    android:background="#ffdedede" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -421,10 +461,22 @@
                      />
                 <View
                     android:layout_width="fill_parent"
+                    android:id="@+id/hour_8"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="421dp"
+                    android:background="#ffdedede" />
+                <View
+                    android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="480dp"
                     android:background="@android:color/black"
                      />
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_9"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="481dp"
+                    android:background="#ffdedede" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -433,10 +485,22 @@
                      />
                 <View
                     android:layout_width="fill_parent"
+                    android:id="@+id/hour_10"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="541dp"
+                    android:background="#ffdedede" />
+                <View
+                    android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="600dp"
                     android:background="@android:color/black"
                      />
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_11"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="601dp"
+                    android:background="#ffdedede" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -445,10 +509,22 @@
                      />
                 <View
                     android:layout_width="fill_parent"
+                    android:id="@+id/hour_12"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="661dp"
+                    android:background="#ffdedede" />
+                <View
+                    android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="720dp"
                     android:background="@android:color/black"
                      />
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_13"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="721dp"
+                    android:background="#ffdedede" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -457,10 +533,22 @@
                      />
                 <View
                     android:layout_width="fill_parent"
+                    android:id="@+id/hour_14"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="781dp"
+                    android:background="#ffdedede" />
+                <View
+                    android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="840dp"
                     android:background="@android:color/black"
                      />
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_15"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="841dp"
+                    android:background="#ffdedede" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -469,10 +557,22 @@
                      />
                 <View
                     android:layout_width="fill_parent"
+                    android:id="@+id/hour_16"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="901dp"
+                    android:background="#ffdedede" />
+                <View
+                    android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="960dp"
                     android:background="@android:color/black"
                      />
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_17"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="961dp"
+                    android:background="#ffdedede" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -481,10 +581,22 @@
                      />
                 <View
                     android:layout_width="fill_parent"
+                    android:id="@+id/hour_18"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="1021dp"
+                    android:background="#ffdedede" />
+                <View
+                    android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="1080dp"
                     android:background="@android:color/black"
                      />
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_19"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="1081dp"
+                    android:background="#ffdedede" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -493,10 +605,22 @@
                      />
                 <View
                     android:layout_width="fill_parent"
+                    android:id="@+id/hour_20"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="1141dp"
+                    android:background="#ffdedede" />
+                <View
+                    android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="1200dp"
                     android:background="@android:color/black"
                      />
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_21"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="1201dp"
+                    android:background="#ffdedede" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -505,16 +629,34 @@
                      />
                 <View
                     android:layout_width="fill_parent"
+                    android:id="@+id/hour_22"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="1261dp"
+                    android:background="#ffdedede" />
+                <View
+                    android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="1320dp"
                     android:background="@android:color/black"
                      />
                 <View
                     android:layout_width="fill_parent"
+                    android:id="@+id/hour_23"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="1321dp"
+                    android:background="#ffdedede" />
+                <View
+                    android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="1380dp"
                     android:background="@android:color/black"
                      />
+                <View
+                    android:layout_width="fill_parent"
+                    android:id="@+id/hour_24"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="1381dp"
+                    android:background="#ffdedede" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -530,6 +672,8 @@
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
+    
+    
 </LinearLayout>
 </FrameLayout>
 

@@ -4,8 +4,17 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.format.DateFormat;
+import android.util.Log;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 public class PlannerRepo {
 
@@ -16,6 +25,7 @@ public class PlannerRepo {
     }
 
     // Add new database entry appointment
+    /*
     public int insertAppointment(PlannerDB planner) {
 
         //Open connection to write data
@@ -31,17 +41,32 @@ public class PlannerRepo {
         db.close(); // Closing database connection
         return (int) planner_Id;
     }
+	*/
+    public void insertAppointment_NEW(String start, String end, String desc) {
 
+        //Open connection to write data
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PlannerDB.KEY_time_start,start);
+        values.put(PlannerDB.KEY_time_end,end);
+        values.put(PlannerDB.KEY_description, desc);
+
+        // Inserting Row
+        db.insert(PlannerDB.TABLE1, null, values);
+        db.close(); // Closing database connection
+        
+    }
+    
     // Add new database entry availability
-    public int insertAvailability(PlannerDB availability) {
+    public void insertAvailability_NEW(String date, String avail) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(PlannerDB.KEY_availability, availability.availability);
+        values.put(PlannerDB.KEY_date, date);
+        values.put(PlannerDB.KEY_availability, avail);
 
-        long planner_Id = db.insert(PlannerDB.TABLE2, null, values);
+        db.insert(PlannerDB.TABLE2, null, values);
         db.close(); // Closing database connection
-        return (int) planner_Id;
     }
 
     // Add new database entry to-do task
@@ -66,6 +91,17 @@ public class PlannerRepo {
         values.put(PlannerDB.KEY_taskDuration, taskD);
 
         db.insert(PlannerDB.TABLE3, null, values);
+        db.close(); // Closing database connection
+    }
+    
+    //Add new database entry notes
+    public void insertNote(String note) {
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PlannerDB.KEY_note, note);
+
+        db.insert(PlannerDB.TABLE4, null, values);
         db.close(); // Closing database connection
     }
 
@@ -99,6 +135,7 @@ public class PlannerRepo {
     }
     
     // Update database entry appointment
+    /*
     public void updateAppointment(PlannerDB planner) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -112,7 +149,8 @@ public class PlannerRepo {
         db.update(PlannerDB.TABLE1, values, PlannerDB.KEY_ID_1 + "= ?", new String[] { String.valueOf(planner.planning_ID_1) });
         db.close(); // Closing database connection
     }
-
+	*/
+    
     // Update database entry availability
     public void updateAvailability(PlannerDB availability) {
 
@@ -158,7 +196,7 @@ public class PlannerRepo {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 PlannerDB.KEY_ID_1 + "," +
-                PlannerDB.KEY_date + "," +
+               // PlannerDB.KEY_date + "," +
                 PlannerDB.KEY_time_start + "," +
                 PlannerDB.KEY_time_end + "," +
                 PlannerDB.KEY_description +
@@ -184,6 +222,70 @@ public class PlannerRepo {
         return appointmentList;
 
     }
+    
+    ////////////
+    public List<EventObjects> getAllFutureEvents(Date mDate){
+        Calendar calDate = Calendar.getInstance();
+        Calendar dDate = Calendar.getInstance();
+        calDate.setTime(mDate);
+
+        int calDay = calDate.get(Calendar.DAY_OF_MONTH);
+        int calMonth = calDate.get(Calendar.MONTH) + 1;
+        int calYear = calDate.get(Calendar.YEAR);
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selectQuery =  "SELECT  " +
+                PlannerDB.KEY_ID_1 + "," +
+               // PlannerDB.KEY_date + "," +
+                PlannerDB.KEY_time_start + "," +
+                PlannerDB.KEY_time_end + "," +
+                PlannerDB.KEY_description +
+                " FROM " + PlannerDB.TABLE1;
+        
+        List<EventObjects> events = new ArrayList();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if(cursor.moveToFirst()){
+            do{
+                int id = cursor.getInt(0);
+                String message = cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_description));
+                String startDate = cursor.getString(cursor.getColumnIndexOrThrow(PlannerDB.KEY_time_start));
+                String endDate = cursor.getString(cursor.getColumnIndexOrThrow(PlannerDB.KEY_time_end));
+                Log.i("msg", message);
+                Log.i("msg", startDate);
+                Log.i("msg", endDate);
+                //convert start date to date object
+                Date reminderDate = convertStringToDate(startDate);
+                Date end = convertStringToDate(endDate);
+                
+                if(reminderDate != null)
+                {
+                dDate.setTime(reminderDate);
+                int dDay = dDate.get(Calendar.DAY_OF_MONTH);
+                int dMonth = dDate.get(Calendar.MONTH) + 1;
+                int dYear = dDate.get(Calendar.YEAR);
+
+                if(calDay == dDay && calMonth == dMonth && calYear == dYear){
+                    events.add(new EventObjects(id, message, reminderDate, end));
+                }
+                }else
+                	Log.i("fuck", "it's null");
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        return events;
+    }
+
+    private Date convertStringToDate(String dateInString){
+        SimpleDateFormat format = new SimpleDateFormat("d-MM-yyyy HH:mm", Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = format.parse(dateInString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+    ///////////
 
     // Get all database entries availability
     public ArrayList<HashMap<String, String>> getAvailabilityList() {
@@ -191,6 +293,7 @@ public class PlannerRepo {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 PlannerDB.KEY_ID_2 + "," +
+                PlannerDB.KEY_date + "," +
                 PlannerDB.KEY_availability +
                 " FROM " + PlannerDB.TABLE2;
 
@@ -202,7 +305,7 @@ public class PlannerRepo {
         if (cursor.moveToFirst()) {
             do {
                 HashMap<String, String> availability = new HashMap<String, String>();
-                availability.put("id2", cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_ID_2)));
+                availability.put("date", cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_date)));
                 availability.put("availability", cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_availability)));
                 availabilityList.add(availability);
 
@@ -246,8 +349,37 @@ public class PlannerRepo {
         return toDoList;
 
     }
+    
+ // Get all database entries notes
+    public ArrayList<String> getNotesList() {
+        //Open connection to read only
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selectQuery =  "SELECT  " +
+                PlannerDB.KEY_ID_4 + "," +
+                PlannerDB.KEY_note  +
+                " FROM " + PlannerDB.TABLE4;
+
+        ArrayList<String> notesList = new ArrayList<String>();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+               
+                notesList.add(cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_note)));
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return notesList;
+
+    }
 
     // Get appointment by ID
+    /*
     public PlannerDB getAppointmentById(int Id){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
@@ -280,7 +412,8 @@ public class PlannerRepo {
         db.close();
         return planner;
     }
-
+	*/
+    
     // Get availability by ID
     public PlannerDB getAvailabilityById(int Id){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
