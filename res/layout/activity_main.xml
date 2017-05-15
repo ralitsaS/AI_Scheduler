@@ -374,8 +374,7 @@
                     android:id="@+id/hour_1"
                     android:layout_height="60dp"
                     android:layout_marginTop="0dp"
-                    android:background="#ffdedede"
-                    android:clickable="true" />
+                    android:background="#ffdedede" />
 
                 <View
                     android:layout_width="fill_parent"

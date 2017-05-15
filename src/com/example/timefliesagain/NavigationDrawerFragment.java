@@ -1,8 +1,10 @@
 package com.example.timefliesagain;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 //import android.support.v7.app.AppCompatActivity;
@@ -269,6 +271,7 @@ public class NavigationDrawerFragment extends Fragment {
                         	}
                         	
                         	repo_inst.insertAvailability_NEW(curD, avail_hours);
+                        	//setAvailView(MainActivity.currentDate);
                         }
                     })
 
@@ -293,6 +296,44 @@ public class NavigationDrawerFragment extends Fragment {
         if(position==4)
         {
         	//plan button
+        	ArrayList<HashMap<String, String>> avail_list = repo_inst.getAvailabilityList();
+            String avail = null;
+            String[] avail_hours = null;
+            ArrayList<Integer> availHours = new ArrayList<Integer>();
+            for(int i=0; i < avail_list.size(); i++)
+            {
+            	if(avail_list.get(i).get("date").equals(MainActivity.currentDate.getText().toString())) 
+            		{
+            			avail=avail_list.get(i).get("availability");
+            			avail_hours = avail.split(" ");
+            			
+            			for(int k=1; k< avail_hours.length; k++)
+            			{
+            				availHours.add(Integer.parseInt(avail_hours[k]));
+            			}
+            		}
+            }
+            
+            ArrayList<HashMap<String, String>> todo_items = repo_inst.getToDoList();
+            for(int j=0;j < todo_items.size();j++)
+            {
+            	int task_dur = Integer.parseInt(todo_items.get(j).get("taskDuration"));
+            	int n=0;
+                while(n< availHours.size() && n!=-1 && n+task_dur<=availHours.size()){
+                	int check_time = availHours.get(n+(task_dur-1))-availHours.get(n)+1;
+                	if(check_time==task_dur) 
+                	{
+                		for(int m=n; m < n+task_dur;m++)
+                		{
+                			Log.i("planned", todo_items.get(j).get("taskName")+Integer.toString(availHours.get(n)));
+                			availHours.remove(n);
+                		}
+                		n=-1;
+                	}else n++;
+                	
+                }
+            }
+            
         }
         
     }

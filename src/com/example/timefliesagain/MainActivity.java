@@ -85,6 +85,7 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         currentDate = (TextView)findViewById(R.id.display_current_date);
         currentDate.setText(displayDateInString(cal.getTime()));
         displayDailyEvents();
+        setAvailView(currentDate);
         previousDay = (Button)findViewById(R.id.previous_day);
         nextDay = (Button)findViewById(R.id.next_day);
         
@@ -101,40 +102,7 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
             }
         });
         
-        /*
-        final View hour1 =(View)findViewById(R.id.hour_1);
-        hour1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            	hour1.setBackgroundColor(0xFF00FF00);
-            }
-        });
-        */
-        
-        ArrayList<HashMap<String, String>> avail_list = repo_inst.getAvailabilityList();
-        String avail = null;
-        String[] avail_hours;
-        for(int i=0; i < avail_list.size(); i++)
-        {
-        	if(avail_list.get(i).get("date").equals(currentDate.getText().toString())) 
-        		{
-        			avail=avail_list.get(i).get("availability");
-        			avail_hours = avail.split(" ");
-        			
-        			for(int j=0; j < avail_hours.length; j++)
-        			{
-        				Log.i("hour", avail_hours[j]);
-        				String hourID = "hour_"+avail_hours[j];
-        				int h_id = getResources().getIdentifier(hourID, "id", getPackageName());
-        				Log.i("hour id", Integer.toString(h_id));
-        				View hour =(View)findViewById(h_id);
-        				if(hour != null) hour.setBackgroundColor(0xFFFFFFFF);
-        			}
-        		}
-        }
-        
-        
-        
+       
         
     }
     
@@ -151,7 +119,10 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         cal.add(Calendar.DAY_OF_MONTH, -1);
         currentDate.setText(displayDateInString(cal.getTime()));
         displayDailyEvents();
+        setAvailView(currentDate);
     }
+    
+    
     private void nextCalendarDate(){
     	if(mLayout.getChildAt(eventIndex-1)!=null) 
     		{//Log.i("eventIndex4", Integer.toString(mLayout.getChildCount()));
@@ -162,11 +133,16 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         cal.add(Calendar.DAY_OF_MONTH, 1);
         currentDate.setText(displayDateInString(cal.getTime()));
         displayDailyEvents();
+        setAvailView(currentDate);
     }
+    
+    
     private String displayDateInString(Date mDate){
         SimpleDateFormat formatter = new SimpleDateFormat("d MMMM, yyyy", Locale.ENGLISH);
         return formatter.format(mDate);
     }
+    
+    
     private void displayDailyEvents(){
         Date calendarDate = cal.getTime();
         List<EventObjects> dailyEvent = repo_inst.getAllFutureEvents(calendarDate);
@@ -219,6 +195,40 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         
     }
     
+    
+    
+    public void setAvailView(TextView cur_date){
+    	ArrayList<HashMap<String, String>> avail_list = repo_inst.getAvailabilityList();
+        String avail = null;
+        String[] avail_hours;
+        for(int i=0; i < avail_list.size(); i++)
+        {
+        	if(avail_list.get(i).get("date").equals(cur_date.getText().toString())) 
+        		{
+        			avail=avail_list.get(i).get("availability");
+        			avail_hours = avail.split(" ");
+        			
+        			for(int x=1; x <= 24; x++)
+        			{
+        				//Log.i("hour", avail_hours[j]);
+        				//String hourID = "hour_"+avail_hours[j];
+    					String hourID = "hour_"+x;
+        				int h_id = getResources().getIdentifier(hourID, "id", getPackageName());
+        				//Log.i("hour id", Integer.toString(h_id));
+        				View hour =(View)findViewById(h_id);
+        				hour.setBackgroundColor(0xFFDEDEDE);
+        				
+        				for(int j=1; j < avail_hours.length; j++)
+            			{
+            				if(avail_hours[j].equals(Integer.toString(x))) hour.setBackgroundColor(0xFFFFFFFF);
+            			
+            				//if(hour != null) hour.setBackgroundColor(0xFFFFFFFF);
+            			}
+        			}
+        			
+        		}
+        }
+    }
     //////////////////////////////////////////
     
     
