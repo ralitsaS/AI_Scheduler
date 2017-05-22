@@ -1,5 +1,8 @@
 package com.example.timefliesagain;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,6 +23,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -31,7 +35,9 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -46,6 +52,7 @@ public class NavigationDrawerFragment extends Fragment {
     private ListView mDrawerListView;
     private View mFragmentContainerView;
     private int mCurrentSelectedPosition = 0;
+    private RelativeLayout mLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,7 @@ public class NavigationDrawerFragment extends Fragment {
         repo_inst = new PlannerRepo(this.getActivity());
         // Select the default item.
        // selectItem(mCurrentSelectedPosition);
+        
     }
 
     @Override
@@ -79,6 +87,7 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
+        
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
@@ -89,6 +98,7 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.set_availability),
                         getString(R.string.notes),
                         getString(R.string.plan),
+                        getString(R.string.quest),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
@@ -106,7 +116,7 @@ public class NavigationDrawerFragment extends Fragment {
     public void setUp(int fragmentId, DrawerLayout drawerLayout) {
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
-
+        //drawerLayout.closeDrawers();
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
@@ -217,7 +227,33 @@ public class NavigationDrawerFragment extends Fragment {
                             
                             //CHANGE THIS LATER
                             
-                            repo_inst.insertAppointment_NEW(start, end, "oh jeez rick");
+                            repo_inst.insertAppointment_NEW(start, end, desc);
+                            
+                            int topMargin = (hour_start * 60) + ((min_start * 60) / 100);
+                            
+                            long timeDifference = event_end.getTime() - event_start.getTime();
+                            Calendar mCal = Calendar.getInstance();
+                            mCal.setTimeInMillis(timeDifference);
+                            int hours = mCal.get(Calendar.HOUR);
+                            int minutes = mCal.get(Calendar.MINUTE);
+                            int height = (hours * 60) + ((minutes * 60) / 100);
+                            
+                            
+                            mLayout = (RelativeLayout)getActivity().findViewById(R.id.left_event_column);
+                            TextView mEventView = new TextView(getActivity());
+                            RelativeLayout.LayoutParams lParam = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                            lParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                            lParam.topMargin = (int) (topMargin * 1.5);
+                            lParam.leftMargin = 24;
+                            mEventView.setLayoutParams(lParam);
+                            mEventView.setPadding(24, 0, 24, 0);
+                            mEventView.setHeight((int) (height * 1.5));
+                            mEventView.setGravity(0x11);
+                            mEventView.setTextColor(Color.parseColor("#ffffff"));
+                            //change
+                            mEventView.setText(desc);
+                            mEventView.setBackgroundColor(Color.parseColor("#3F51B5"));
+                            mLayout.addView(mEventView, MainActivity.eventIndex - 1);
                         }
                     })
 
@@ -230,6 +266,7 @@ public class NavigationDrawerFragment extends Fragment {
 
             AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
             alertDialogAndroid.show();
+            mDrawerLayout.closeDrawers();
     	}
         
         if(position==1)
@@ -270,8 +307,32 @@ public class NavigationDrawerFragment extends Fragment {
                         		} 
                         	}
                         	
+                        	ArrayList<HashMap<String, String>> avail_list = repo_inst.getAvailabilityList();
+                        	for(int a=0; a<avail_list.size(); a++)
+                        		if(avail_list.get(a).get("date").equals(curD)) repo_inst.deleteAvailability(curD);
+                        	
                         	repo_inst.insertAvailability_NEW(curD, avail_hours);
-                        	//setAvailView(MainActivity.currentDate);
+                        	//MainActivity.setAvailView(MainActivity.currentDate);
+                        	String[] av_hrs = avail_hours.split(" ");
+                        	for(int x=1; x <= 24; x++)
+                			{
+                				//Log.i("hour", avail_hours[j]);
+                				//String hourID = "hour_"+avail_hours[j];
+            					String hourID = "hour_"+x;
+                				int h_id = getResources().getIdentifier(hourID, "id", getContext().getPackageName());
+                				//Log.i("hour id", Integer.toString(h_id));
+                				View hour =(View)getActivity().findViewById(h_id);
+                				hour.setBackgroundColor(0xFFDEDEDE);
+                				
+                				if(av_hrs!=null){
+                					for(int j=1; j < av_hrs.length; j++)
+                        			{
+                        				if(av_hrs[j].equals(Integer.toString(x))) hour.setBackgroundColor(0xFFFFFFFF);
+                        			
+                        			}
+                				}
+                				
+                			}
                         }
                     })
 
@@ -284,6 +345,8 @@ public class NavigationDrawerFragment extends Fragment {
 
             AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
             alertDialogAndroid.show();
+            
+            mDrawerLayout.closeDrawers();
         }
         
         if(position==3)
@@ -315,6 +378,8 @@ public class NavigationDrawerFragment extends Fragment {
             }
             
             ArrayList<HashMap<String, String>> todo_items = repo_inst.getToDoList();
+            ArrayList<String> planned_ids = new ArrayList<String>();
+            
             for(int j=0;j < todo_items.size();j++)
             {
             	int task_dur = Integer.parseInt(todo_items.get(j).get("taskDuration"));
@@ -323,21 +388,73 @@ public class NavigationDrawerFragment extends Fragment {
                 	int check_time = availHours.get(n+(task_dur-1))-availHours.get(n)+1;
                 	if(check_time==task_dur) 
                 	{
+                		double topMargin = 60*(availHours.get(n)-1)+1;
+                		double height = 59*task_dur;
+                		String message = todo_items.get(j).get("taskName");
+                		mLayout = (RelativeLayout)this.getActivity().findViewById(R.id.left_event_column);
+                		//int eventIndex = mLayout.getChildCount();
+                		TextView mTaskView = new TextView(this.getActivity());
+                		RelativeLayout.LayoutParams lParam = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                		lParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                
+                		lParam.topMargin = (int) (topMargin * 1.5);
+                		lParam.leftMargin = 40;
+                		mTaskView.setLayoutParams(lParam);
+                		mTaskView.setPadding(24, 0, 24, 0);
+                		mTaskView.setHeight((int) (height * 1.5));
+                		mTaskView.setGravity(0x11);
+                		mTaskView.setTextColor(Color.parseColor("#ffffff"));
+                		mTaskView.setText(message);
+                		mTaskView.setBackgroundColor(Color.parseColor("#3fb57d"));
+                		if(mLayout!=null) mLayout.addView(mTaskView, MainActivity.eventIndex - 1);
+                        
+                		repo_inst.insertPlan(MainActivity.currentDate.getText().toString(), Integer.toString(availHours.get(n)), Integer.toString(task_dur), todo_items.get(j).get("taskName"));
+                        planned_ids.add(todo_items.get(j).get("id3"));
+                		
+                        String file_data = "Planned on "+MainActivity.currentDate.getText().toString()+": "+todo_items.get(j).get("taskName")+", "+Integer.toString(task_dur)+" \n";
+                        writeToFile(file_data, this.getActivity());
+                        
                 		for(int m=n; m < n+task_dur;m++)
                 		{
                 			Log.i("planned", todo_items.get(j).get("taskName")+Integer.toString(availHours.get(n)));
                 			availHours.remove(n);
                 		}
+                		
+                		//repo_inst.deleteToDo(todo_items.get(j).get("id3"));
+                		
                 		n=-1;
                 	}else n++;
                 	
                 }
             }
             
+            for(int i=0; i<planned_ids.size();i++) repo_inst.deleteToDo(planned_ids.get(i));
+            mDrawerLayout.closeDrawers();
+        }
+        
+        if(position==5)
+        {
+        	Intent myIntent = new Intent(this.getActivity(), Questionnaire.class);
+            myIntent.putExtra("curDate", MainActivity.currentDate.getText().toString()); 
+        	this.getActivity().startActivity(myIntent);
         }
         
     }
 
+    
+    private void writeToFile(String data,Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("study_data.txt", Context.MODE_WORLD_READABLE | Context.MODE_APPEND));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        } 
+    }
+    
+    
+    
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

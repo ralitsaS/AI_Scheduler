@@ -33,7 +33,8 @@ import android.content.Intent;
 public class MyNotes extends ListActivity {
 	private Button back_button;
 	private Button add_note;
-	private EditText input_note;
+	private EditText input_prob;
+	private EditText input_fix;
 	private PlannerRepo repo_inst;
 	private ArrayList<String> db_notes ;
 	private ListView listView;
@@ -70,13 +71,16 @@ public class MyNotes extends ListActivity {
        
         
         add_note = (Button)findViewById(R.id.add_note);
-        input_note = (EditText)findViewById(R.id.editText_mult);
+        input_prob = (EditText)findViewById(R.id.mult_prob);
+        input_fix = (EditText)findViewById(R.id.mult_fix);
         
         add_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String note = input_note.getText().toString();
+                String prob = input_prob.getText().toString();
+                String fix = input_fix.getText().toString();
                 
+                String note = "Problem: "+prob+" \n Solution: "+fix;
                 repo_inst.insertNote(note);
                 db_notes.add(note);
                 listView.setAdapter(adapter);

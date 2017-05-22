@@ -15,6 +15,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
+        android:paddingRight="4dp"
+        android:paddingLeft="4dp"
         android:orientation="horizontal">
 
         <Button
@@ -23,7 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_weight="1"
-            android:text="Back" />
+            android:background="@drawable/back"
+            android:text="" />
         
         <TextView
             android:id="@+id/my_notes_text"
@@ -34,7 +37,7 @@
             android:text="My Notes"
             android:layout_marginTop="4dp"
             android:textStyle="bold"
-            android:layout_weight="3"/>
+            android:layout_weight="6"/>
         
         <Button
             android:id="@+id/save_ch"
@@ -42,7 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_weight="1"
-            android:text="save" />
+            android:background="@drawable/save"
+            android:visibility="invisible"
+            android:text="" />
         
         
     </LinearLayout>
@@ -50,29 +55,37 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:paddingBottom="4dp"
         android:paddingTop="4dp" >
 
         <EditText
-            android:id="@+id/editText_mult"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:ems="10"
+            android:id="@+id/mult_prob"
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:ems="6"
+            android:hint="What problem have I encountered?"
             android:inputType="textMultiLine" >
 
-            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/mult_fix"
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:ems="6"
+            android:hint="What is my solution?"
+            android:inputType="textMultiLine" >
+
         </EditText>
 
         <Button
             android:id="@+id/add_note"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add" />
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/add"
+            android:text="" />
     </LinearLayout>
-
-
 
         <ListView
         android:id="@android:id/list"

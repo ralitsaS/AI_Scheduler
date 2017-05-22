@@ -82,6 +82,8 @@ public class PlannerRepo {
         return (int) planner_Id;
     }
     
+    
+    
  // Add new database entry to-do task
     public void insertToDo_NEW(String taskN, String taskD) {
 
@@ -91,6 +93,20 @@ public class PlannerRepo {
         values.put(PlannerDB.KEY_taskDuration, taskD);
 
         db.insert(PlannerDB.TABLE3, null, values);
+        db.close(); // Closing database connection
+    }
+   
+    // Add new database entry planned task
+    public void insertPlan(String day, String hour_start, String length, String message) {
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PlannerDB.KEY_day, day);
+        values.put(PlannerDB.KEY_hour_start, hour_start);
+        values.put(PlannerDB.KEY_length, length);
+        values.put(PlannerDB.KEY_message, message);
+
+        db.insert(PlannerDB.TABLE5, null, values);
         db.close(); // Closing database connection
     }
     
@@ -106,17 +122,24 @@ public class PlannerRepo {
     }
 
     // Delete database entry
-    public void deleteAppointment(int iD) {
+    public void deleteAppointment(String time_start) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete(PlannerDB.TABLE1, PlannerDB.KEY_ID_1 + "= ?", new String[] { String.valueOf(iD) });
+        db.delete(PlannerDB.TABLE1, PlannerDB.KEY_time_start + "= ?", new String[] { time_start });
         db.close(); // Closing database connection
     }
 
-    public void deleteAvailability(int iD) {
+    public void deleteAvailability(String date) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete(PlannerDB.TABLE2, PlannerDB.KEY_ID_2 + "= ?", new String[] { String.valueOf(iD) });
+        db.delete(PlannerDB.TABLE2, PlannerDB.KEY_date + "= ?", new String[] { date });
+        db.close(); // Closing database connection
+    }
+    
+    public void deletePlanned(String day) {
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete(PlannerDB.TABLE5, PlannerDB.KEY_day + "= ?", new String[] { day });
         db.close(); // Closing database connection
     }
 
@@ -315,6 +338,41 @@ public class PlannerRepo {
         cursor.close();
         db.close();
         return availabilityList;
+
+    }
+    
+ // Get all database entries planned tasks
+    public ArrayList<HashMap<String, String>> getPlannedList() {
+        //Open connection to read only
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selectQuery =  "SELECT  " +
+                PlannerDB.KEY_ID_5 + "," +
+                PlannerDB.KEY_day + "," +
+                PlannerDB.KEY_hour_start + "," +
+                PlannerDB.KEY_length + "," +
+                PlannerDB.KEY_message + 
+                " FROM " + PlannerDB.TABLE5;
+
+        ArrayList<HashMap<String, String>> planList = new ArrayList<HashMap<String, String>>();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                HashMap<String, String> plan = new HashMap<String, String>();
+                plan.put("day", cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_day)));
+                plan.put("hour_start", cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_hour_start)));
+                plan.put("length", cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_length)));
+                plan.put("message", cursor.getString(cursor.getColumnIndex(PlannerDB.KEY_message)));
+                planList.add(plan);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return planList;
 
     }
 

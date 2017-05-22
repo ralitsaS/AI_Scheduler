@@ -8,7 +8,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //version number to upgrade database version
     //each time if you Add, Edit table, you need to change the
     //version number.
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 7;
 
     // Database Name
     private static final String DATABASE_NAME = "planning.db";
@@ -48,6 +48,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 + PlannerDB.KEY_note + " TEXT); ";
 
         db.execSQL(CREATE_TABLE_NOTES);
+        
+        String CREATE_TABLE_PLAN = "CREATE TABLE " + PlannerDB.TABLE5  + "("
+                + PlannerDB.KEY_ID_5  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + PlannerDB.KEY_day + " TEXT, "
+                + PlannerDB.KEY_hour_start + " TEXT, "
+                + PlannerDB.KEY_length + " TEXT, "
+                + PlannerDB.KEY_message + " TEXT); ";
+
+        db.execSQL(CREATE_TABLE_PLAN);
 
     }
 
@@ -58,6 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + PlannerDB.TABLE2);
         db.execSQL("DROP TABLE IF EXISTS " + PlannerDB.TABLE3);
         db.execSQL("DROP TABLE IF EXISTS " + PlannerDB.TABLE4);
+        db.execSQL("DROP TABLE IF EXISTS " + PlannerDB.TABLE5);
 
         // Create tables again
         onCreate(db);

@@ -1,7 +1,9 @@
 package com.example.timefliesagain;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -19,10 +21,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,10 +48,11 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
     public static TextView currentDate;
     private Calendar cal = Calendar.getInstance();
     private RelativeLayout mLayout;
-    private int eventIndex;
+    public static int eventIndex;
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
     private PlannerRepo repo_inst;
+    
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +90,15 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         Log.i("eventIndex1", Integer.toString(eventIndex));
         currentDate = (TextView)findViewById(R.id.display_current_date);
         currentDate.setText(displayDateInString(cal.getTime()));
+        try {
+			deleteOldPlanned(currentDate.getText().toString());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         displayDailyEvents();
         setAvailView(currentDate);
+        setTaskView(currentDate);
         previousDay = (Button)findViewById(R.id.previous_day);
         nextDay = (Button)findViewById(R.id.next_day);
         
@@ -111,8 +124,10 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
     private void previousCalendarDate(){
     	if(mLayout.getChildAt(eventIndex-1)!=null) 
     		{
+    		int new_index = mLayout.getChildCount();
     		//Log.i("eventIndex2", Integer.toString(mLayout.getChildCount()));
-    		mLayout.removeViewAt(eventIndex - 1);
+    		for(int i=1; i <= new_index-eventIndex; i++ ) mLayout.removeViewAt(eventIndex - 1);
+    		//mLayout.removeView(mTaskView);
     		//Log.i("eventIndex3", Integer.toString(mLayout.getChildCount()));
     		} 
     	
@@ -120,13 +135,16 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         currentDate.setText(displayDateInString(cal.getTime()));
         displayDailyEvents();
         setAvailView(currentDate);
+        setTaskView(currentDate);
     }
     
     
     private void nextCalendarDate(){
     	if(mLayout.getChildAt(eventIndex-1)!=null) 
-    		{//Log.i("eventIndex4", Integer.toString(mLayout.getChildCount()));
-    		mLayout.removeViewAt(eventIndex - 1);
+    		{int new_index = mLayout.getChildCount();
+    		//Log.i("eventIndex2", Integer.toString(mLayout.getChildCount()));
+    		for(int i=1; i <= new_index-eventIndex; i++ ) mLayout.removeViewAt(eventIndex - 1);
+    		//mLayout.removeView(mTaskView);
     		//Log.i("eventIndex5", Integer.toString(mLayout.getChildCount()));
     		} 
     	
@@ -134,6 +152,7 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         currentDate.setText(displayDateInString(cal.getTime()));
         displayDailyEvents();
         setAvailView(currentDate);
+        setTaskView(currentDate);
     }
     
     
@@ -142,6 +161,15 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         return formatter.format(mDate);
     }
     
+    private void deleteOldPlanned(String now) throws ParseException{
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMMM, yyyy", Locale.ENGLISH);
+        ArrayList<HashMap<String, String>> planned_list = repo_inst.getPlannedList();
+        ArrayList<String> old_dates= new ArrayList<String>();
+        for(int i =0; i<planned_list.size();i++)
+        	if(sdf.parse(planned_list.get(i).get("day")).before(sdf.parse(now))) old_dates.add(planned_list.get(i).get("day"));
+        
+        for(int j =0; j<old_dates.size();j++) repo_inst.deletePlanned(old_dates.get(j));
+    }
     
     private void displayDailyEvents(){
         Date calendarDate = cal.getTime();
@@ -175,9 +203,9 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         Log.d(TAG, "Minutes value " + minutes);
         int topViewMargin = (hours * 60) + ((minutes * 60) / 100);
         Log.d(TAG, "Margin top " + topViewMargin);
-        createEventView(topViewMargin, height, message);
+        createEventView(eventDate, topViewMargin, height, message);
     }
-    private void createEventView(int topMargin, int height, String message){
+    private void createEventView(Date start_date, int topMargin, int height, String message){
         TextView mEventView = new TextView(MainActivity.this);
         RelativeLayout.LayoutParams lParam = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         lParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
@@ -190,6 +218,42 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         mEventView.setTextColor(Color.parseColor("#ffffff"));
         mEventView.setText(message);
         mEventView.setBackgroundColor(Color.parseColor("#3F51B5"));
+        
+        SimpleDateFormat format = new SimpleDateFormat("d-MM-yyyy HH:mm", Locale.ENGLISH);
+        final String start = format.format(start_date);
+        
+        mEventView.setClickable(true);
+        mEventView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+            	LayoutInflater layoutInflaterAndroid = LayoutInflater.from(MainActivity.this);
+                final View mView = layoutInflaterAndroid.inflate(R.layout.del_ev_dialog, null);
+                AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MainActivity.this);
+                alertDialogBuilderUserInput.setView(mView);
+                
+                alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogBox, int id) {
+
+                    	
+                    	mLayout.removeView(v);
+                    	repo_inst.deleteAppointment(start);
+                    	
+                    }
+                })
+
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                dialogBox.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+        alertDialogAndroid.show();
+            }
+        });
         mLayout.addView(mEventView, eventIndex - 1);
         Log.i("eventIndex6", Integer.toString(mLayout.getChildCount()));
         
@@ -200,15 +264,19 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
     public void setAvailView(TextView cur_date){
     	ArrayList<HashMap<String, String>> avail_list = repo_inst.getAvailabilityList();
         String avail = null;
-        String[] avail_hours;
+        String[] avail_hours = null;
+        
         for(int i=0; i < avail_list.size(); i++)
         {
         	if(avail_list.get(i).get("date").equals(cur_date.getText().toString())) 
-        		{
-        			avail=avail_list.get(i).get("availability");
-        			avail_hours = avail.split(" ");
-        			
-        			for(int x=1; x <= 24; x++)
+    		{
+    			avail=avail_list.get(i).get("availability");
+    			avail_hours = avail.split(" ");
+    		}
+        }
+        
+        
+        for(int x=1; x <= 24; x++)
         			{
         				//Log.i("hour", avail_hours[j]);
         				//String hourID = "hour_"+avail_hours[j];
@@ -218,13 +286,48 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         				View hour =(View)findViewById(h_id);
         				hour.setBackgroundColor(0xFFDEDEDE);
         				
-        				for(int j=1; j < avail_hours.length; j++)
-            			{
-            				if(avail_hours[j].equals(Integer.toString(x))) hour.setBackgroundColor(0xFFFFFFFF);
-            			
-            				//if(hour != null) hour.setBackgroundColor(0xFFFFFFFF);
-            			}
+        				if(avail_hours!=null){
+        					for(int j=1; j < avail_hours.length; j++)
+                			{
+                				if(avail_hours[j].equals(Integer.toString(x))) hour.setBackgroundColor(0xFFFFFFFF);
+                			
+                			}
+        				}
+        				
         			}
+        	
+    }
+    
+    
+    public void setTaskView(TextView cur_date){
+    	ArrayList<HashMap<String, String>> planned_tasks = repo_inst.getPlannedList();
+        
+        for(int i=0; i < planned_tasks.size(); i++)
+        {
+        	if(planned_tasks.get(i).get("day").equals(cur_date.getText().toString())) 
+        		{
+        			
+        		double topMargin = 60*(Integer.parseInt(planned_tasks.get(i).get("hour_start"))-1)+1;
+        		double height = 59*Integer.parseInt(planned_tasks.get(i).get("length"));
+        		String message = planned_tasks.get(i).get("message");
+        		//mLayout = (RelativeLayout)this.getActivity().findViewById(R.id.left_event_column);
+        		
+        		TextView mTaskView = new TextView(this);
+                RelativeLayout.LayoutParams lParam = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                
+				lParam.topMargin = (int) (topMargin * 1.5);
+                lParam.leftMargin = 40;
+                mTaskView.setLayoutParams(lParam);
+                mTaskView.setPadding(24, 0, 24, 0);
+                mTaskView.setHeight((int) (height * 1.5));
+                mTaskView.setGravity(0x11);
+                mTaskView.setTextColor(Color.parseColor("#ffffff"));
+                mTaskView.setText(message);
+                mTaskView.setBackgroundColor(Color.parseColor("#3fb57d"));
+                if(mLayout!=null) mLayout.addView(mTaskView, eventIndex - 1);
+                Log.i("index", Integer.toString(mLayout.indexOfChild(mTaskView)));
+                Log.i("eventIndex2", Integer.toString(mLayout.getChildCount()));
         			
         		}
         }
