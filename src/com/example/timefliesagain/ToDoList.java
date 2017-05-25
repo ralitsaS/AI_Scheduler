@@ -26,6 +26,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.app.ListActivity;
 import android.content.Intent;
 
@@ -115,6 +116,7 @@ public class ToDoList extends ListActivity {
                 	Log.v("changes", get_task+get_dur);
                 	repo_inst.insertToDo_NEW(get_task, get_dur);
                 	//repo_inst.updateToDo_NEW(i+1, get_task, get_dur);
+                	Toast.makeText(ToDoList.this, "Order saved.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -194,8 +196,8 @@ public class ToDoList extends ListActivity {
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         	menu.setHeaderTitle("Select The Action");
-        	menu.add(0, 0, 0, "Edit");
-        	menu.add(0, 1, 0, "Delete");  
+        	//menu.add(0, 0, 0, "Edit");
+        	menu.add(0, 0, 0, "Delete");  
         	super.onCreateContextMenu(menu, v, menuInfo);
               
         }
@@ -206,11 +208,8 @@ public class ToDoList extends ListActivity {
           int menuItemIndex = item.getItemId();
           int list_index = info.position;
           
+          
           if(menuItemIndex==0)
-          {
-        	  //Log.v("db_item", String.valueOf(todo_items.get(i).get("id3")));
-          }
-          if(menuItemIndex==1)
           {
         	  //String DBitem_index;
         	  String get_all = content.get(list_index);

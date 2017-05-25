@@ -29,6 +29,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -96,8 +97,11 @@ public class Questionnaire extends ListActivity {
             @Override
             public void onClick(View v) {
             	for (int i = 0; i < listView.getCount(); i++) {
+            		Log.i("list view count", Integer.toString(listView.getCount()));
+            		
+            		if(listView.getChildAt(i)!=null){
                     EditText  et = (EditText ) listView.getChildAt(i).findViewById(R.id.quest_left);
-                    if (!et.getText().toString().equals(null)) {
+                    if (!et.getText().toString().equals(null) && !et.getText().toString().equals("0")) {
                     	TextView  task = (TextView ) listView.getChildAt(i).findViewById(R.id.TextView21);
                     	Log.i("task", task.getText().toString());
                     	Log.i("timeleft", et.getText().toString());
@@ -105,7 +109,10 @@ public class Questionnaire extends ListActivity {
                     	repo_inst.insertToDo_NEW(task.getText().toString(), et.getText().toString());
                     	String file_data = "\n Put back on "+cur_date+": "+task.getText().toString()+", "+et.getText().toString();
                         writeToFile(file_data, Questionnaire.this);
+                        
+                        Toast.makeText(Questionnaire.this, "To-Do list updated.", Toast.LENGTH_SHORT).show();
                        }
+            		}else Log.i("problem", "child is null");
                     }
             }
         });

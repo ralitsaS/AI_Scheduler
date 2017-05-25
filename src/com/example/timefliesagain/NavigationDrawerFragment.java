@@ -40,6 +40,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 public class NavigationDrawerFragment extends Fragment {
 
@@ -252,6 +253,8 @@ public class NavigationDrawerFragment extends Fragment {
                             mEventView.setText(desc);
                             mEventView.setBackgroundColor(Color.parseColor("#3F51B5"));
                             mLayout.addView(mEventView, MainActivity.eventIndex - 1);
+                            
+                            Toast.makeText(getContext(), "Event added.", Toast.LENGTH_SHORT).show();
                         }
                     })
 
@@ -265,6 +268,7 @@ public class NavigationDrawerFragment extends Fragment {
             AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
             alertDialogAndroid.show();
             mDrawerLayout.closeDrawers();
+            
     	}
         
         if(position==1)
@@ -311,6 +315,7 @@ public class NavigationDrawerFragment extends Fragment {
                         	
                         	repo_inst.insertAvailability_NEW(curD, avail_hours);
                         	//MainActivity.setAvailView(MainActivity.currentDate);
+                        	Toast.makeText(getContext(), "Available hours set.", Toast.LENGTH_SHORT).show();
                         	String[] av_hrs = avail_hours.split(" ");
                         	for(int x=1; x <= 24; x++)
                 			{
@@ -412,6 +417,8 @@ public class NavigationDrawerFragment extends Fragment {
                         String file_data = "\n Planned on "+MainActivity.currentDate.getText().toString()+": "+todo_items.get(j).get("taskName")+", "+Integer.toString(task_dur);
                         writeToFile(file_data, this.getActivity());
                         
+                        
+                        
                 		for(int m=n; m < n+task_dur;m++)
                 		{
                 			Log.i("planned", todo_items.get(j).get("taskName")+Integer.toString(availHours.get(n)));
@@ -425,6 +432,8 @@ public class NavigationDrawerFragment extends Fragment {
                 	
                 }
             }
+            
+            Toast.makeText(getContext(), "Day planned.", Toast.LENGTH_SHORT).show();
             
             for(int i=0; i<planned_ids.size();i++) repo_inst.deleteToDo(planned_ids.get(i));
             mDrawerLayout.closeDrawers();
