@@ -49,6 +49,7 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
     private Calendar cal = Calendar.getInstance();
     private RelativeLayout mLayout;
     public static int eventIndex;
+    public static float scr_dens;
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
     private PlannerRepo repo_inst;
@@ -64,6 +65,7 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
+        scr_dens = getResources().getDisplayMetrics().density;
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -209,11 +211,11 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
         TextView mEventView = new TextView(MainActivity.this);
         RelativeLayout.LayoutParams lParam = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         lParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        lParam.topMargin = (int) (topMargin * 1.5);
+        lParam.topMargin = (int) (topMargin * scr_dens);
         lParam.leftMargin = 24;
         mEventView.setLayoutParams(lParam);
         mEventView.setPadding(24, 0, 24, 0);
-        mEventView.setHeight((int) (height * 1.5));
+        mEventView.setHeight((int) (height * scr_dens));
         mEventView.setGravity(0x11);
         mEventView.setTextColor(Color.parseColor("#ffffff"));
         mEventView.setText(message);
@@ -316,11 +318,11 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
                 RelativeLayout.LayoutParams lParam = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 lParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
                 
-				lParam.topMargin = (int) (topMargin * 1.5);
+				lParam.topMargin = (int) (topMargin *scr_dens);
                 lParam.leftMargin = 40;
                 mTaskView.setLayoutParams(lParam);
                 mTaskView.setPadding(24, 0, 24, 0);
-                mTaskView.setHeight((int) (height * 1.5));
+                mTaskView.setHeight((int) (height * scr_dens));
                 mTaskView.setGravity(0x11);
                 mTaskView.setTextColor(Color.parseColor("#ffffff"));
                 mTaskView.setText(message);
@@ -380,6 +382,9 @@ implements NavigationDrawerFragment.NavigationDrawerCallbacks{
                 break;
             case 5:
                 mTitle = getString(R.string.plan);
+                break;  
+            case 6:
+                mTitle = getString(R.string.quest);
                 break;    
         }
     }

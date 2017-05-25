@@ -1,33 +1,23 @@
 package com.example.timefliesagain;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
+
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 
 public class MyNotes extends ListActivity {
@@ -84,6 +74,9 @@ public class MyNotes extends ListActivity {
                 repo_inst.insertNote(note);
                 db_notes.add(note);
                 listView.setAdapter(adapter);
+                
+                String file_data = "\n Note added on "+MainActivity.currentDate.getText().toString()+": "+note;
+                writeToFile(file_data, MyNotes.this);
             }
         });
         
@@ -91,4 +84,14 @@ public class MyNotes extends ListActivity {
         
     }
 	
+	private void writeToFile(String data,Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("study_data.txt", Context.MODE_WORLD_READABLE | Context.MODE_APPEND));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        } 
+    }
 }

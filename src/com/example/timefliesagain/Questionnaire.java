@@ -36,6 +36,7 @@ import android.content.Intent;
 public class Questionnaire extends ListActivity {
 	private Button back_button;
 	private Button set_tasks;
+	private Button open_data;
 	private PlannerRepo repo_inst;
 	private ArrayList<HashMap<String, String>> planned_tasks ;
 	private ListView listView;
@@ -102,14 +103,23 @@ public class Questionnaire extends ListActivity {
                     	Log.i("timeleft", et.getText().toString());
                     	
                     	repo_inst.insertToDo_NEW(task.getText().toString(), et.getText().toString());
-                    	String file_data = "Put back on "+cur_date+": "+task.getText().toString()+", "+et.getText().toString()+" \n";
+                    	String file_data = "\n Put back on "+cur_date+": "+task.getText().toString()+", "+et.getText().toString();
                         writeToFile(file_data, Questionnaire.this);
                        }
                     }
             }
         });
         
+        open_data = (Button)findViewById(R.id.data);
         
+        open_data.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	Intent myIntent = new Intent(Questionnaire.this, StudyData.class);
+                // myIntent.putExtra("key", value); //Optional parameters
+            	Questionnaire.this.startActivity(myIntent);
+            }
+        });
         
         
         

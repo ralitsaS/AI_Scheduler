@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.timefliesagain.Questionnaire" >
 
+     <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    
     <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +16,7 @@
     
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:paddingRight="4dp"
@@ -69,9 +74,20 @@
         android:paddingLeft="10dp"
         android:background="#ffd9b3ff"
         android:clickable="true"
+        android:textColor="#ff000000"
         android:text="Having trouble keeping up with your plans? Use the My Notes feature (click here)." />
  </LinearLayout>
  
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Which tasks are still uncompleted? Set the remaining time needed:" />
+    
         <ListView
             android:id="@android:id/list"
             android:layout_width="fill_parent"
@@ -92,10 +108,17 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                
-               android:text="SET" />
+               android:text="Set" />
+          
+          <Button
+               android:id="@+id/data"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               
+               android:text="Data" />
         
     </LinearLayout>
     
 </LinearLayout>
-
+</ScrollView>
 </RelativeLayout>

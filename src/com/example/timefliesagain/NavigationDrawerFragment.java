@@ -225,8 +225,6 @@ public class NavigationDrawerFragment extends Fragment {
                             
                             String desc  = pick_desc.getText().toString();
                             
-                            //CHANGE THIS LATER
-                            
                             repo_inst.insertAppointment_NEW(start, end, desc);
                             
                             int topMargin = (hour_start * 60) + ((min_start * 60) / 100);
@@ -243,14 +241,14 @@ public class NavigationDrawerFragment extends Fragment {
                             TextView mEventView = new TextView(getActivity());
                             RelativeLayout.LayoutParams lParam = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                             lParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                            lParam.topMargin = (int) (topMargin * 1.5);
+                            lParam.topMargin = (int) (topMargin * MainActivity.scr_dens);
                             lParam.leftMargin = 24;
                             mEventView.setLayoutParams(lParam);
                             mEventView.setPadding(24, 0, 24, 0);
-                            mEventView.setHeight((int) (height * 1.5));
+                            mEventView.setHeight((int) (height * MainActivity.scr_dens));
                             mEventView.setGravity(0x11);
                             mEventView.setTextColor(Color.parseColor("#ffffff"));
-                            //change
+                           
                             mEventView.setText(desc);
                             mEventView.setBackgroundColor(Color.parseColor("#3F51B5"));
                             mLayout.addView(mEventView, MainActivity.eventIndex - 1);
@@ -397,11 +395,11 @@ public class NavigationDrawerFragment extends Fragment {
                 		RelativeLayout.LayoutParams lParam = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 		lParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
                 
-                		lParam.topMargin = (int) (topMargin * 1.5);
+                		lParam.topMargin = (int) (topMargin * MainActivity.scr_dens);
                 		lParam.leftMargin = 40;
                 		mTaskView.setLayoutParams(lParam);
                 		mTaskView.setPadding(24, 0, 24, 0);
-                		mTaskView.setHeight((int) (height * 1.5));
+                		mTaskView.setHeight((int) (height * MainActivity.scr_dens));
                 		mTaskView.setGravity(0x11);
                 		mTaskView.setTextColor(Color.parseColor("#ffffff"));
                 		mTaskView.setText(message);
@@ -411,7 +409,7 @@ public class NavigationDrawerFragment extends Fragment {
                 		repo_inst.insertPlan(MainActivity.currentDate.getText().toString(), Integer.toString(availHours.get(n)), Integer.toString(task_dur), todo_items.get(j).get("taskName"));
                         planned_ids.add(todo_items.get(j).get("id3"));
                 		
-                        String file_data = "Planned on "+MainActivity.currentDate.getText().toString()+": "+todo_items.get(j).get("taskName")+", "+Integer.toString(task_dur)+" \n";
+                        String file_data = "\n Planned on "+MainActivity.currentDate.getText().toString()+": "+todo_items.get(j).get("taskName")+", "+Integer.toString(task_dur);
                         writeToFile(file_data, this.getActivity());
                         
                 		for(int m=n; m < n+task_dur;m++)
