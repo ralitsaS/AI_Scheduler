@@ -101,7 +101,7 @@ public class Questionnaire extends ListActivity {
             		
             		if(listView.getChildAt(i)!=null){
                     EditText  et = (EditText ) listView.getChildAt(i).findViewById(R.id.quest_left);
-                    if (!et.getText().toString().equals(null) && !et.getText().toString().equals("0")) {
+                    if (!et.getText().toString().equals("") && !et.getText().toString().equals("0")) {
                     	TextView  task = (TextView ) listView.getChildAt(i).findViewById(R.id.TextView21);
                     	Log.i("task", task.getText().toString());
                     	Log.i("timeleft", et.getText().toString());

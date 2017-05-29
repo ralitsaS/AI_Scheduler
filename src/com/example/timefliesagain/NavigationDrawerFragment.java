@@ -191,14 +191,25 @@ public class NavigationDrawerFragment extends Fragment {
                     .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogBox, int id) {
                             // ToDo get user input here
+                        	int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+                        	int hour_start;
+                        	int min_start;
+                        	int hour_end;
+                        	int min_end;
                         	int day = date_picked.getDayOfMonth();
                             int month = date_picked.getMonth();
                             int year =  date_picked.getYear();
-                            int hour_start = pick_start.getHour();
-                            int min_start = pick_start.getMinute();
-                            int hour_end = pick_end.getHour();
-                            int min_end = pick_end.getMinute();
-                            
+                            if (currentApiVersion > android.os.Build.VERSION_CODES.LOLLIPOP_MR1){
+                            hour_start = pick_start.getHour();
+                            min_start = pick_start.getMinute();
+                            hour_end = pick_end.getHour();
+                            min_end = pick_end.getMinute();
+                            }else{
+                            	hour_start = pick_start.getCurrentHour();
+                                min_start = pick_start.getCurrentMinute();
+                                hour_end = pick_end.getCurrentHour();
+                                min_end = pick_end.getCurrentMinute();
+                            }
                             Calendar cal1 = Calendar.getInstance();
                             cal1.set(Calendar.YEAR, year);
                             cal1.set(Calendar.MONTH, month);
